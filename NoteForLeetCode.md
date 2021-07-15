@@ -1,4 +1,4 @@
-# Note of LeetCode 
+# cNote of LeetCode 
 
 ### **2021.4.13** 二叉搜索树
 
@@ -213,7 +213,7 @@ int rob(vector<int>& nums) {
 >   				high--;
 >   			}
 >   			nums[low] = nums[high];
->                                                           
+>                                                             
 >   			while (nums[low] <= pivot && low < high)
 >   			{
 >   				low++;
@@ -1306,7 +1306,6 @@ public:
 ### 2021.7.14 二分&lower_bound()
 
 > LeetCode - 1818 绝对值差和 https://leetcode-cn.com/problems/minimum-absolute-sum-difference/
->
 
 ```c++
 class Solution {
@@ -1338,19 +1337,54 @@ public:
 
 
 
+### 2021.7.15 count&bound&二分
 
+> 剑指Offer 53 - 在排序数组中查找数字Ⅰhttps://leetcode-cn.com/problems/zai-pai-xu-shu-zu-zhong-cha-zhao-shu-zi-lcof/
 
+1、利用count()
 
+```c++
+class Solution {
+public:
+    int search(vector<int>& nums, int target) {
+        return count(nums.begin(),nums.end(),target);
+    }
+};
+```
 
+2、利用lower_bound()和upper_bound()
 
+```c++
+class Solution {
+public:
+    int search(vector<int>& nums, int target) {
+        return upper_bound(nums.begin(),nums.end(),target) - lower_bound(nums.begin(),nums.end(),target);
+    }
+};
+```
 
+3、二分
 
+<img src="https://pic.leetcode-cn.com/b4521d9ba346cad9e382017d1abd1db2304b4521d4f2d839c32d0ecff17a9c0d-Picture1.png" alt="Picture1.png" style="zoom:40%;" />
 
+```c++
+class Solution {
+public:
+    int BinarySearch(vector<int>& nums, int target){
+        int left = 0, right = nums.size()-1;
+        while(left<=right){
+            int mid = left + (right - left)/2;
+            if(nums[mid]<=target)left = mid + 1;
+            else right = mid - 1;
+        }
+        return right;
+    }
 
-
-
-
-
+    int search(vector<int>& nums, int target) {
+        return BinarySearch(nums,target) - BinarySearch(nums,target-1);
+    }
+};
+```
 
 
 
