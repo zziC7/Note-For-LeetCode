@@ -213,7 +213,7 @@ int rob(vector<int>& nums) {
 >   				high--;
 >   			}
 >   			nums[low] = nums[high];
->                                                               
+>                                                                 
 >   			while (nums[low] <= pivot && low < high)
 >   			{
 >   				low++;
@@ -1427,11 +1427,40 @@ public:
 
 
 
+### 2021.7.18 哈希表&emplace_back
 
+> 面试题 10.02. 变位词组 https://leetcode-cn.com/problems/group-anagrams-lcci/
 
+将词组的字典序作为哈希表的key，将变位词组作为哈希表的value
 
+```c++
+class Solution {
+public:
+    vector<vector<string>> groupAnagrams(vector<string>& strs) {
+        unordered_map<string,vector<string>> mp;
+        for(auto& str:strs){
+            string key = str;
+            sort(key.begin(),key.end());
+            mp[key].emplace_back(str);
+        }
+        vector<vector<string>> res;
+        for(auto it=mp.begin(); it!=mp.end(); it++){
+            res.emplace_back(it->second);
+        }
+        return res;
+    }
+};
+```
 
+vector是我们常用的容器，向其中增加元素的常用方法有：emplace_back和push_back两种。
 
+push_back():
+
+首先需要调用构造函数构造一个**临时对象**，然后调用拷贝构造函数将这个临时对象放入容器中，然后释放临时变量。
+
+emplace_back():
+
+这个元素原地构造，**不需要触发拷贝构造和转移构造**。
 
 
 
