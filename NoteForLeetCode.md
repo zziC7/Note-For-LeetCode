@@ -213,7 +213,7 @@ int rob(vector<int>& nums) {
 >   				high--;
 >   			}
 >   			nums[low] = nums[high];
->                                                             
+>                                                               
 >   			while (nums[low] <= pivot && low < high)
 >   			{
 >   				low++;
@@ -1388,13 +1388,42 @@ public:
 
 
 
+### 2021.7.17 简单dp(空间优化)
 
+> 剑指 Offer 42. 连续子数组的最大和 https://leetcode-cn.com/problems/lian-xu-zi-shu-zu-de-zui-da-he-lcof/
 
+```c++
+class Solution {
+public:
+    int maxSubArray(vector<int>& nums) {
+        int n = nums.size();
+        vector<int> dp(n); //dp[i]表示下标到i的连续子数组最大和
+        dp[0] = nums[0];
+        for(int i=1; i<n; ++i){
+            dp[i] = max(dp[i-1]+nums[i],nums[i]);
+        }
+        return *max_element(dp.begin(),dp.end());
+    }
+};
+```
 
+空间优化: O(n) --> O(1)
 
-
-
-
+```c++
+class Solution {
+public:
+    int maxSubArray(vector<int>& nums) {
+        int n = nums.size();
+        int maxx = nums[0];
+        int res = maxx;
+        for(int i=1; i<n; ++i){
+            maxx = max(maxx+nums[i],nums[i]);
+            res = max(res,maxx);
+        }
+        return res;
+    }
+};
+```
 
 
 
