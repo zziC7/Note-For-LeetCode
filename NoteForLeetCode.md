@@ -213,7 +213,7 @@ int rob(vector<int>& nums) {
 >   				high--;
 >   			}
 >   			nums[low] = nums[high];
->                                                                 
+>                                                                   
 >   			while (nums[low] <= pivot && low < high)
 >   			{
 >   				low++;
@@ -1463,4 +1463,6 @@ emplace_back():
 这个元素原地构造，**不需要触发拷贝构造和转移构造**。
 
 
+
+**C++左值、右值、右值引用详解**  https://blog.csdn.net/hyman_yx/article/details/52044632
 
