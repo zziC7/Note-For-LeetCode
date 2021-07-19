@@ -213,7 +213,7 @@ int rob(vector<int>& nums) {
 >   				high--;
 >   			}
 >   			nums[low] = nums[high];
->                                                                   
+>                                                                     
 >   			while (nums[low] <= pivot && low < high)
 >   			{
 >   				low++;
@@ -1465,4 +1465,34 @@ emplace_back():
 
 
 **C++左值、右值、右值引用详解**  https://blog.csdn.net/hyman_yx/article/details/52044632
+
+
+
+### 2021.7.19 排序+滑动窗口
+
+> LeetCode - 1838. 最高频元素的频数 https://leetcode-cn.com/problems/frequency-of-the-most-frequent-element/
+
+```c++
+class Solution {
+public:
+    int maxFrequency(vector<int>& nums, int k) {
+        // 排序
+        sort(nums.begin(), nums.end());
+        // 定义左右指针
+        int i = 0, j = 0, n = nums.size();
+        // 统计数值
+        long long sum = 0;
+        while(j < n) {
+            sum += nums[j];
+            j++; //右指针右移
+            // 如果滑动窗口范围内的值加上所能调整的次数还是无法满足全部相等
+            if((long long)nums[j - 1] * (j - i) > sum + k) {
+                sum -= nums[i];
+                i++; 
+            }
+        }
+        return j - i;
+    }
+};
+```
 
