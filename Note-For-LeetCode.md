@@ -213,7 +213,7 @@ int rob(vector<int>& nums) {
 >   				high--;
 >   			}
 >   			nums[low] = nums[high];
->                                                                     
+>                                                                       
 >   			while (nums[low] <= pivot && low < high)
 >   			{
 >   				low++;
@@ -1488,7 +1488,7 @@ public:
             // 如果滑动窗口范围内的值加上所能调整的次数还是无法满足全部相等
             if((long long)nums[j - 1] * (j - i) > sum + k) {
                 sum -= nums[i];
-                i++; 
+                i++; //左指针左移
             }
         }
         return j - i;
