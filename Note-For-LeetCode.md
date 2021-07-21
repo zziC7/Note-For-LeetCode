@@ -213,7 +213,7 @@ int rob(vector<int>& nums) {
 >   				high--;
 >   			}
 >   			nums[low] = nums[high];
->                                                                       
+>                                                                         
 >   			while (nums[low] <= pivot && low < high)
 >   			{
 >   				low++;
@@ -233,7 +233,7 @@ int rob(vector<int>& nums) {
 
 > https://blog.csdn.net/gp1330782530/article/details/106413778 unordered_set的介绍及使用
 >
-> https://leetcode-cn.com/problems/linked-list-cycle-ii/submissions/ LeetCode-142 环形链表
+> https://leetcode-cn.com/problems/linked-list-cycle-ii/LeetCode-142 环形链表
 >
 > 哈希表最大的优点，就是**把数据的存储和查找消耗的时间大大降低，几乎可以看成是常数时间；而代价仅仅是消耗比较多的内存**。然而在当前可利用内存越来越多的情况下，用空间换时间的做法是值得的。另外，编码比较容易也是它的特点之一。
 >
@@ -1172,7 +1172,9 @@ public:
 
 ### 2021.6.22 回溯+剪枝
 
-> LeetCode - 剑指Offer 38.字符串的排列 https://leetcode-cn.com/problems/zi-fu-chuan-de-pai-lie-lcof/
+> LeetCode - 剑指Offer 38.字符串的排列 
+>
+> https://leetcode-cn.com/problems/zi-fu-chuan-de-pai-lie-lcof/
 
 ```c++
 class Solution {
@@ -1206,7 +1208,9 @@ private:
 
 ### 2021.6.23 哈希表(Hard)
 
-> LeetCode - 149 直线上最多的点数 https://leetcode-cn.com/problems/max-points-on-a-line/
+> LeetCode - 149 直线上最多的点数 
+>
+> https://leetcode-cn.com/problems/max-points-on-a-line/
 
 ```c++
 class Solution {
@@ -1242,7 +1246,9 @@ public:
 
 ### 2021.7.3 字符频率排序
 
-> LeetCode - 451 根据字符出现频率排序 https://leetcode-cn.com/problems/sort-characters-by-frequency/
+> LeetCode - 451 根据字符出现频率排序 
+>
+> https://leetcode-cn.com/problems/sort-characters-by-frequency/
 
 1、哈希表+vector+sort配合使用
 
@@ -1274,7 +1280,9 @@ public:
 
 ### 2021.7.11 二分
 
-> LeetCode - 274 H指数 https://leetcode-cn.com/problems/h-index/
+> LeetCode - 274 H指数 
+>
+> https://leetcode-cn.com/problems/h-index/
 
 ```c++
 class Solution {
@@ -1305,7 +1313,9 @@ public:
 
 ### 2021.7.14 二分&lower_bound()
 
-> LeetCode - 1818 绝对值差和 https://leetcode-cn.com/problems/minimum-absolute-sum-difference/
+> LeetCode - 1818 绝对值差和 
+>
+> https://leetcode-cn.com/problems/minimum-absolute-sum-difference/
 
 ```c++
 class Solution {
@@ -1339,7 +1349,9 @@ public:
 
 ### 2021.7.15 count&bound&二分
 
-> 剑指Offer 53 - 在排序数组中查找数字Ⅰhttps://leetcode-cn.com/problems/zai-pai-xu-shu-zu-zhong-cha-zhao-shu-zi-lcof/
+> 剑指Offer 53 - 在排序数组中查找数字Ⅰ
+>
+> https://leetcode-cn.com/problems/zai-pai-xu-shu-zu-zhong-cha-zhao-shu-zi-lcof/
 
 1、利用count()
 
@@ -1390,7 +1402,9 @@ public:
 
 ### 2021.7.17 简单dp(空间优化)
 
-> 剑指 Offer 42. 连续子数组的最大和 https://leetcode-cn.com/problems/lian-xu-zi-shu-zu-de-zui-da-he-lcof/
+> 剑指 Offer 42. 连续子数组的最大和 
+>
+> https://leetcode-cn.com/problems/lian-xu-zi-shu-zu-de-zui-da-he-lcof/
 
 ```c++
 class Solution {
@@ -1429,7 +1443,9 @@ public:
 
 ### 2021.7.18 哈希表&emplace_back
 
-> 面试题 10.02. 变位词组 https://leetcode-cn.com/problems/group-anagrams-lcci/
+> 面试题 10.02. 变位词组
+>
+> https://leetcode-cn.com/problems/group-anagrams-lcci/
 
 将词组的字典序作为哈希表的key，将变位词组作为哈希表的value
 
@@ -1470,7 +1486,9 @@ emplace_back():
 
 ### 2021.7.19 排序+滑动窗口
 
-> LeetCode - 1838. 最高频元素的频数 https://leetcode-cn.com/problems/frequency-of-the-most-frequent-element/
+> LeetCode - 1838. 最高频元素的频数 
+>
+> https://leetcode-cn.com/problems/frequency-of-the-most-frequent-element/
 
 ```c++
 class Solution {
@@ -1495,4 +1513,63 @@ public:
     }
 };
 ```
+
+
+
+### 2021.7.21 链表&哈希表&双指针
+
+> 剑指 Offer 52. 两个链表的第一公共节点
+>
+> https://leetcode-cn.com/problems/liang-ge-lian-biao-de-di-yi-ge-gong-gong-jie-dian-lcof/
+
+1、利用哈希集合
+
+```c++
+class Solution {
+public:
+    ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
+        unordered_set<ListNode*> st;
+        ListNode* temp = headA;
+        while(temp){
+            st.insert(temp);
+            temp = temp->next;
+        }
+        temp = headB;
+        while(temp){
+            if(st.count(temp))return temp;
+            temp = temp->next;
+        }
+        return nullptr;
+    }
+};
+```
+
+2、双指针
+
+```c++
+class Solution {
+public:
+    ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
+        if (headA == nullptr || headB == nullptr) {
+            return nullptr;
+        }
+        ListNode *pA = headA, *pB = headB;
+        while (pA != pB) {
+            pA = pA == nullptr ? headB : pA->next;
+            pB = pB == nullptr ? headA : pB->next;
+        }
+        return pA;
+    }
+};
+```
+
+
+
+
+
+
+
+
+
+
 
