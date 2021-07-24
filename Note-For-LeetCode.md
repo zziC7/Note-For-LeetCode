@@ -213,7 +213,7 @@ int rob(vector<int>& nums) {
 >   				high--;
 >   			}
 >   			nums[low] = nums[high];
->                                                                         
+>                                                                           
 >   			while (nums[low] <= pivot && low < high)
 >   			{
 >   				low++;
@@ -1565,11 +1565,46 @@ public:
 
 
 
+### 2021.7.25 哈希表+遍历
 
+> LeetCode - 1743 从相邻元素对还原数组 
+>
+> https://leetcode-cn.com/problems/restore-the-array-from-adjacent-pairs/
 
+```c++
+class Solution {
+public:
+    vector<int> restoreArray(vector<vector<int>>& adjacentPairs) {
+        unordered_map<int,vector<int>> mp;
+        unordered_set<int> st; //储存已经遍历过的数
+        for(int i=0; i<adjacentPairs.size(); ++i){
+            mp[adjacentPairs[i][0]].push_back(adjacentPairs[i][1]);
+            mp[adjacentPairs[i][1]].push_back(adjacentPairs[i][0]);
+        }
+        vector<int> ans;
+        int begin = 0; //找一个端点
+        for(auto& val:mp){
+            if(val.second.size()==1){
+                begin = val.first;
+                st.insert(begin);
+                ans.push_back(begin);
+                break;
+            }
+        }
 
-
-
+        int temp = begin; //遍历
+        while(st.size() < adjacentPairs.size()+1){
+            for(int i=0; i<mp[temp].size(); ++i){
+                if(st.count(mp[temp][i])) continue;//该数遍历过,直接跳过
+                ans.push_back(mp[temp][i]);
+                st.insert(mp[temp][i]);
+                temp = mp[temp][i];
+            }
+        }
+        return ans;
+    }
+};
+```
 
 
 
