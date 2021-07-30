@@ -213,7 +213,7 @@ int rob(vector<int>& nums) {
 >   				high--;
 >   			}
 >   			nums[low] = nums[high];
->                                                                           
+>                                                                             
 >   			while (nums[low] <= pivot && low < high)
 >   			{
 >   				low++;
@@ -1607,4 +1607,38 @@ public:
 ```
 
 
+
+### 2021.7.31 二叉树的垂序遍历dfs
+
+> LeetCode - 987 二叉树的垂序遍历
+>
+> https://leetcode-cn.com/problems/vertical-order-traversal-of-a-binary-tree/
+
+```c++
+class Solution {
+public:
+    void dfs(vector<tuple<int, int, int>>& nodes, TreeNode* node, int row, int col){
+        if(!node) return;
+        nodes.emplace_back(col,row,node->val);
+        dfs(nodes, node->left, row+1, col-1);
+        dfs(nodes, node->right, row+1, col+1);
+    }
+    
+    vector<vector<int>> verticalTraversal(TreeNode* root) {
+        vector<tuple<int, int, int>> nodes; //[col, row, val]
+        dfs(nodes, root, 0, 0);
+        sort(nodes.begin(), nodes.end());
+        vector<vector<int>> ans;
+        int lastcol = INT_MIN;
+        for (const auto& [col, row, value]: nodes) {
+            if (col != lastcol) {
+                lastcol = col;
+                ans.emplace_back(); //已经下一列了，开一个新的数组
+            }
+            ans.back().push_back(value); //不管开没开新数组，都要push进去数据
+        }
+        return ans;
+    }
+};
+```
 
