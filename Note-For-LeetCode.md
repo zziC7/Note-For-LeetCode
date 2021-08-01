@@ -213,7 +213,7 @@ int rob(vector<int>& nums) {
 >   				high--;
 >   			}
 >   			nums[low] = nums[high];
->                                                                             
+>                                                                               
 >   			while (nums[low] <= pivot && low < high)
 >   			{
 >   				low++;
@@ -1638,6 +1638,42 @@ public:
             ans.back().push_back(value); //不管开没开新数组，都要push进去数据
         }
         return ans;
+    }
+};
+```
+
+
+
+### 2021.8.1 优先队列priority_queue
+
+> LeetCode - 1337 矩阵中战斗力最弱的 K 行
+>
+> https://leetcode-cn.com/problems/the-k-weakest-rows-in-a-matrix/
+
+```c++
+class Solution {
+public:
+    vector<int> kWeakestRows(vector<vector<int>>& mat, int k) {
+        priority_queue<pair<int,int>> q; //[power,row]
+        //把每一行的战斗力加到优先队列里
+        for(int i=0; i<mat.size(); ++i){
+            int cnt = 0; //统计这一行的战斗力
+            for(int val:mat[i]){
+                cnt += val;
+            }
+            q.push({cnt,i});
+        }
+        //现在优先队列里面是按战斗力从强到弱排
+        //把前面强的pop掉，只剩下需要的k个
+        while(q.size()>k) q.pop();
+        vector<int> res;
+        while(q.size()>0){
+            res.push_back(q.top().second);
+            q.pop();
+        }
+        //现在res里是从强到弱排，需要再反转
+        reverse(res.begin(),res.end());
+        return res;
     }
 };
 ```
