@@ -213,7 +213,7 @@ int rob(vector<int>& nums) {
 >   				high--;
 >   			}
 >   			nums[low] = nums[high];
->                                                                                 
+>                                                                                   
 >   			while (nums[low] <= pivot && low < high)
 >   			{
 >   				low++;
@@ -1772,15 +1772,15 @@ public:
         int maxn = INT_MIN, right = -1;
         int minn = INT_MAX, left = -1;
         for (int i = 0; i < n; i++) {
-            if (maxn > nums[i]) {
-                right = i;
-            } else {
+            if (nums[i] >= maxn) {
                 maxn = nums[i];
-            }
-            if (minn < nums[n - i - 1]) {
-                left = n - i - 1;
             } else {
+                right = i;
+            }
+            if (nums[n - i - 1] <= minn) {
                 minn = nums[n - i - 1];
+            } else {
+                left = n - i - 1;
             }
         }
         return right == -1 ? 0 : right - left + 1;
