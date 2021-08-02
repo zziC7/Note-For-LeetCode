@@ -213,7 +213,7 @@ int rob(vector<int>& nums) {
 >   				high--;
 >   			}
 >   			nums[low] = nums[high];
->                                                                               
+>                                                                                 
 >   			while (nums[low] <= pivot && low < high)
 >   			{
 >   				low++;
@@ -1674,6 +1674,116 @@ public:
         //现在res里是从强到弱排，需要再反转
         reverse(res.begin(),res.end());
         return res;
+    }
+};
+```
+
+
+
+
+
+### 2021.8.2 Dijkstra算法
+
+> LeetCode - 743 网络延迟时间
+>
+> https://leetcode-cn.com/problems/network-delay-time/solution/gtalgorithm-dan-yuan-zui-duan-lu-chi-tou-w3zc/
+>
+> Dijkstra算法讲解视频 https://www.bilibili.com/video/BV1zz4y1m7Nq
+
+```c++
+class Solution {
+public:
+    int networkDelayTime(vector<vector<int>>& times, int n, int k) {
+        //防止相加后溢出int边界，所以除以2
+        const int inf = INT_MAX/2;
+
+        //邻接矩阵储存边的权重，初始化为max(意为距离无限远)
+        vector<vector<int>> mat(n, vector<int>(n, inf));
+        //将边与边的权重储存到邻接矩阵中去
+        for(auto& val:times){
+            int u = val[0] - 1;
+            int v = val[1] - 1;
+            int cost = val[2];
+            mat[u][v] = cost;
+        }
+
+        //Dijkstra算法的具体实现
+        vector<bool> visited(n, false); //储存该点是否已经遍历过
+        vector<int> dis(n, inf); //储存从源节点到每个点的最短距离
+        dis[k-1] = 0; //k是源点，自己到自己的距离是0
+
+        for(int i=0; i<n; ++i){
+            //找到此时还未确定的，距离源点最短的点
+            int cur = -1;
+            for(int j=0; j<n; ++j){
+                if(!visited[j] && (cur==-1 || dis[j]<dis[cur])){
+                    cur = j;
+                }
+            }
+
+            //已经找到点，从这个点出发去更新距离
+            for(int j=0; j<n; ++j){
+                dis[j] = min(dis[j], dis[cur]+mat[cur][j]);
+            }
+            visited[cur] = true; //更新visited
+        }
+
+        //找出最长距离(保证所有节点都收到网络信号)
+        int ans = *max_element(dis.begin(), dis.end());
+        return ans == inf? -1:ans;
+    }
+};
+```
+
+
+
+### 2021.8.3 最短无序连续子数组
+
+> LeetCode - 581 最短无序连续子数组
+>
+> https://leetcode-cn.com/problems/shortest-unsorted-continuous-subarray/
+
+1、把原数组排序好，逐一比较找出左右边界 -- **时间:O(nlogn) 空间:O(n)**
+
+```c++
+class Solution {
+public:
+    int findUnsortedSubarray(vector<int>& nums) {
+        vector<int> sortedNums(nums);
+        sort(sortedNums.begin(), sortedNums.end());
+        if(sortedNums == nums) return 0;
+        
+        int left = 0;
+        int right = nums.size() - 1;
+        while(nums[left] == sortedNums[left]) left++;
+        while(nums[right] == sortedNums[right]) right--;
+        return right - left + 1;
+    }
+};
+```
+
+2、一次遍历 -- **时间:O(n) 空间:O(1)**
+
+```c++
+class Solution {
+public:
+    int findUnsortedSubarray(vector<int>& nums) {
+        int n = nums.size();
+        int maxn = INT_MIN, right = -1;
+        int minn = INT_MAX, left = -1;
+        for (int i = 0; i < n; i++) {
+            if (maxn > nums[i]) {
+                right = i;
+            } else {
+                maxn = nums[i];
+            }
+            if (minn < nums[n - i - 1]) {
+                left = n - i - 1;
+            } else {
+                minn = nums[n - i - 1];
+            }
+        }
+        return right == -1 ? 0 : right - left + 1;
     }
 };
 ```
