@@ -213,7 +213,7 @@ int rob(vector<int>& nums) {
 >   				high--;
 >   			}
 >   			nums[low] = nums[high];
->                                                                                   
+>                                                                                     
 >   			while (nums[low] <= pivot && low < high)
 >   			{
 >   				low++;
@@ -1784,6 +1784,48 @@ public:
             }
         }
         return right == -1 ? 0 : right - left + 1;
+    }
+};
+```
+
+
+
+
+
+### 2021.8.4 二分查找
+
+> LeetCode - 611 有效三角形的个数
+>
+> https://leetcode-cn.com/problems/valid-triangle-number/
+
+```c++
+class Solution {
+public:
+    int triangleNumber(vector<int>& nums) {
+        int n = nums.size();
+        if(n < 3) return 0;
+        sort(nums.begin(), nums.end());
+        int cnt = 0;
+        for(int i=0; i<n; ++i){
+            for(int j=i+1; j<n; ++j){
+                //二分查找 找到能和nums[i],nums[j]组成三角形的最大下标k,则j~k中间的也都可以组成三角形
+                int left = j+1, right = n-1;
+                int k = j; //记录最大下标k
+                while(left <= right){
+                    int mid = left + (right - left) / 2;
+                    if(nums[i] + nums[j] > nums[mid]){
+                        //可以组成三角形，记录当前位置，并继续向右搜索
+                        k = mid;
+                        left = mid + 1;
+                    }else{
+                        //不能组成三角形，当前边太大，向左搜索
+                        right = mid - 1;
+                    }
+                }
+                cnt += k-j;
+            }
+        }
+        return cnt;
     }
 };
 ```
