@@ -213,7 +213,7 @@ int rob(vector<int>& nums) {
 >   				high--;
 >   			}
 >   			nums[low] = nums[high];
->                                                                                     
+>                                                                                       
 >   			while (nums[low] <= pivot && low < high)
 >   			{
 >   				low++;
@@ -1826,6 +1826,60 @@ public:
             }
         }
         return cnt;
+    }
+};
+```
+
+
+
+### 2021.8.5 拓扑排序 
+
+> LeetCode - 802. 找到最终的安全状态
+>
+> https://leetcode-cn.com/problems/find-eventual-safe-states/solution/gtalgorithm-san-ju-hua-jiao-ni-wan-zhuan-xf5o/
+
+```c++
+class Solution {
+public:
+    vector<int> eventualSafeNodes(vector<vector<int>>& graph) {
+        //拓扑排序是找到图中入度为 0 的节点，以及仅由入度为 0 节点所指向的节点 
+        //而本题是找到图中出度为 0 的节点，以及仅指向出度为 0 节点的节点
+        //所以先要把原图转化为反图(箭头反转)
+        int n = graph.size();
+        vector<vector<int>> r_graph(n); //反图，将原图的箭头反转
+        vector<int> inDeg(n, 0); //记录反图中每个点的入度(即原图的出度)
+        for(int i = 0; i < n ; ++i){
+            for(int x : graph[i]){
+                r_graph[x].push_back(i);
+            }
+            inDeg[i] = graph[i].size(); //反图入度 = 原图出度
+        }
+        //拓扑排序
+        queue<int> q;
+        //首先将所有入度为0的点加入队列
+        for(int i = 0; i < n ; ++i){
+            if(inDeg[i]==0) q.push(i);
+        }
+
+        while(!q.empty()){
+            int cur = q.front();
+            q.pop();
+
+            for(int x : r_graph[cur]){
+                //将队列首点的邻接点入度-1
+                inDeg[x]--;
+                //如果更新完之后的入度变为0，则加入队列
+                if(inDeg[x] == 0) q.push(x);
+            }
+        }
+
+        //最终入度(原图出度)为 0 的点为安全点
+        vector<int> res;
+        for(int i = 0; i < n ; ++i){
+            if(inDeg[i]==0) res.push_back(i);
+        }
+        sort(res.begin(), res.end());
+        return res;
     }
 };
 ```
