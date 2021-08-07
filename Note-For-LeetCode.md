@@ -213,7 +213,7 @@ int rob(vector<int>& nums) {
 >   				high--;
 >   			}
 >   			nums[low] = nums[high];
->                                                                                       
+>                                                                                               
 >   			while (nums[low] <= pivot && low < high)
 >   			{
 >   				low++;
@@ -1690,6 +1690,13 @@ public:
 >
 > Dijkstra算法讲解视频 https://www.bilibili.com/video/BV1zz4y1m7Nq
 
+Dijkstra算法：
+
+1. 初始化n×n邻接矩阵,初始化为inf/2 (把权重存进去)
+2. 初始化visited数组，记录是否被遍历过
+3. 初始化dis数组，记录源点到每个点的最短距离，自己到自己是0
+4. 遍历n次，找到此时距离源点最短且没有被遍历的点，去更新其他距离，再把visited更新为true
+
 ```c++
 class Solution {
 public:
@@ -1838,6 +1845,12 @@ public:
 >
 > https://leetcode-cn.com/problems/find-eventual-safe-states/solution/gtalgorithm-san-ju-hua-jiao-ni-wan-zhuan-xf5o/
 
+拓扑排序：
+
+1. 把所有入度为0的点加入队列
+2. pop队首，更新邻接的点(入度-1)，再检查更新后是否有点入度为0，加到队列里
+3. 直到队列为空
+
 ```c++
 class Solution {
 public:
@@ -1884,3 +1897,187 @@ public:
 };
 ```
 
+
+
+### 2021.8.6 状态压缩BFS
+
+> LeetCode - 847. 访问所有节点的最短路径
+>
+> https://leetcode-cn.com/problems/shortest-path-visiting-all-nodes/
+>
+> 详细题解：https://leetcode-cn.com/problems/shortest-path-visiting-all-nodes/solution/gtalgorithm-tu-jie-fa-ba-hardbian-cheng-v5knb/
+
+```c++
+class Solution {
+public:
+    int shortestPathLength(vector<vector<int>>& graph) {
+        int n = graph.size();
+
+        // 1.初始化队列及标记数组，存入起点
+        queue< tuple<int, int, int> > q; // 三个属性分别为 idx, mask, dist
+        vector<vector<bool>> vis(n, vector<bool>(1 << n)); // 节点编号及当前状态
+        for(int i = 0; i < n; i++) {
+            q.push({i, 1 << i, 0}); // 存入起点，起始距离0，标记
+            vis[i][1 << i] = true;
+        }
+
+        // 开始搜索
+        while(!q.empty()) {
+            auto [cur, mask, dist] = q.front(); // 弹出队头元素
+            q.pop();
+
+            // 找到答案，返回结果
+            if(mask == (1 << n) - 1) return dist;
+
+            // 扩展
+            for(int x : graph[cur]) {
+                int nextmask = mask | (1 << x);
+                if(!vis[x][nextmask]) {
+                    q.push({x, nextmask, dist + 1});
+                    vis[x][nextmask] = true;
+                }
+            }
+        }
+        return 0;
+    }
+};
+```
+
+
+
+### 2021.8.7 拓扑排序的应用
+
+> LeetCode - 457. 环形数组是否存在循环
+>
+> https://leetcode-cn.com/problems/circular-array-loop/
+
+1、拓扑排序，一个图中是否有环可以用拓扑排序来检验
+
+```c++
+class Solution {
+public:
+    vector<vector<int>> graph; // 邻接表，将原数组转化为图
+    vector<int> inDeg;         // 储存每个点的入度 
+
+    // 拓扑排序，检验图中是否有环
+    bool TopSort(int n){
+        queue<int> q;
+        // 首先把入度为0的节点加入队列
+        for(int i = 0; i < n; ++i){
+            if(!inDeg[i]) q.push(i);
+        }
+
+        while(!q.empty()){
+            // 弹出队头元素
+            int cur = q.front();
+            q.pop();
+
+            // 找到以cur为起点的有向边，终点入度-1   
+            for(int x : graph[cur]){
+                inDeg[x]--;
+                // 若更新后入度也为0，则入队
+                if(!inDeg[x]) q.push(x);
+            }
+        }
+
+        // 检验拓扑排序后所有点的入度
+        for(int i = 0; i < n; ++i){
+            // 仍有入度不为0的点，说明存在环
+            if(inDeg[i]) return true;
+        }
+        return false;
+    }
+
+    bool circularArrayLoop(vector<int>& nums) {
+        int n = nums.size();
+        graph.resize(n);
+        inDeg.resize(n);
+
+        // 先处理正向边(nums[i] > 0)的情况
+        for(int i = 0; i < n; ++i){
+            int next = ((i + nums[i]) % n + n) % n;
+            if( nums[i] <= 0 || next == i) continue; // 忽略负向边和自环的情况
+            graph[i].push_back(next);
+            inDeg[next]++;
+        }
+
+        if(TopSort(n)) return true; // 检验正向边
+
+        // 清空数组
+        graph.clear();
+        graph.resize(n);
+        inDeg.clear();
+        inDeg.resize(n);
+
+        // 再处理负向边(nums[i] < 0)的情况
+        for(int i = 0; i < n; ++i){
+            int next = ((i + nums[i]) % n + n) % n;
+            if( nums[i] > 0 || next == i) continue; // 忽略正向边和自环的情况
+            graph[i].push_back(next);
+            inDeg[next]++;
+        }
+
+        if(TopSort(n)) return true; // 检验负向边
+
+        return false;
+    }
+};
+```
+
+2、哈希集合
+
+```c++
+class Solution {
+public:
+    bool circularArrayLoop(vector<int>& nums) {
+        int n = nums.size();
+        // 遍历nums, 遍历到i说明从num[i]出发，检验从该点出发是否有环
+        for(int i = 0; i < n; ++i){
+            unordered_set<int> st; // set储存已遍历的index
+            int cur = i;
+            st.insert(cur);
+            while(1){
+                int next = ( (cur + nums[cur] % n) + n ) % n;
+                if(nums[cur] * nums[next] <= 0 || next == cur) break; // 不同方向和自环的情况不符合要求
+                if(st.count(next)) return true;
+                st.insert(next);
+                cur = next; // 迭代
+            }
+        }
+        return false;
+    }
+};
+```
+
+3、快慢指针
+
+```c++
+class Solution {
+public:
+    bool circularArrayLoop(vector<int>& nums) {
+        int n = nums.size();
+        auto next = [&](int x){
+            return ((x + nums[x]) % n + n) %n;
+        };
+        // 遍历nums,检验从i出发是否有环
+        for(int i = 0; i < n; ++i){
+            if(!nums[i]) continue; // 0肯定不存在环
+            int slow = i, fast = next(i);
+            while(nums[slow] * nums[fast] > 0 && nums[slow] * nums[next(fast)] > 0){
+                if(slow == fast){
+                    // fast把slow套圈了
+                    if(slow != next(slow)) return true; // 不是自环，符合要求
+                    if(slow == next(slow)) break; // 排除自环的情况
+                }
+                slow = next(slow);
+                fast = next(next(fast));
+            }
+        }
+        return false;
+    }
+};
+```
+
+附：匿名函数
+
+https://blog.csdn.net/zhang14916/article/details/101058089
