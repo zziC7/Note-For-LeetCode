@@ -1,4 +1,4 @@
-# cNote of LeetCode 
+# Note of LeetCode 
 
 ### **2021.4.13** 二叉搜索树
 
@@ -213,7 +213,7 @@ int rob(vector<int>& nums) {
 >   				high--;
 >   			}
 >   			nums[low] = nums[high];
->                                                                                               
+>                                                                                                   
 >   			while (nums[low] <= pivot && low < high)
 >   			{
 >   				low++;
@@ -2081,3 +2081,34 @@ public:
 附：匿名函数
 
 https://blog.csdn.net/zhang14916/article/details/101058089
+
+
+
+
+
+### 2021.8.8 滚动数组
+
+> LeetCode - 1137. 第N个泰波那契数
+>
+> https://leetcode-cn.com/problems/n-th-tribonacci-number/
+
+```c++
+class Solution {
+public:
+    int tribonacci(int n) {
+        if(n == 0) return 0;
+        if(n == 1) return 1;
+        if(n == 2) return 1;
+
+        int p = 0, q = 0, r = 1, s = 1;
+        for(int i = 3; i <= n; ++i){
+            p = q;
+            q = r;
+            r = s;
+            s = p + q + r;
+        }
+        return s;
+    }
+};
+```
+
