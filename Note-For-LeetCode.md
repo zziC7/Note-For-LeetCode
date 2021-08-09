@@ -213,7 +213,7 @@ int rob(vector<int>& nums) {
 >   				high--;
 >   			}
 >   			nums[low] = nums[high];
->                                                                                                   
+>                                                                                                     
 >   			while (nums[low] <= pivot && low < high)
 >   			{
 >   				low++;
@@ -2108,6 +2108,70 @@ public:
             s = p + q + r;
         }
         return s;
+    }
+};
+```
+
+
+
+### 2021.8.9 优先队列&多指针
+
+> LeetCode - 313 超级丑数
+>
+> https://leetcode-cn.com/problems/super-ugly-number/
+
+1、优先队列法
+
+```c++
+class Solution {
+public:
+    int nthSuperUglyNumber(int n, vector<int>& primes) {
+        unordered_set<long> seen; //哈希集合储存遍历过的数
+        priority_queue<long, vector<long>, greater<long>> q;
+        seen.insert(1);
+        q.push(1);
+        int ugly = 0;
+        for(int i = 0; i < n; ++i){
+            long cur = q.top();
+            q.pop();
+            ugly = (int)cur;
+            for(int x : primes){
+                long next = cur * x;
+                if(!seen.count(next)){
+                    seen.insert(next);
+                    q.push(next);
+                }
+            }
+        }
+        return ugly;
+    }
+};
+```
+
+2、多指针法
+
+```c++
+class Solution {
+public:
+    int nthSuperUglyNumber(int n, vector<int>& primes) {
+        vector<int> dp(n + 1); //dp[i]代表第i个超级丑数
+        dp[1] = 1;
+        int m = primes.size();
+        vector<int> pointer(m, 1);
+        for(int i = 2; i <= n; ++i){
+            vector<int> nums(m);
+            for(int j = 0; j < m; ++j){
+                nums[j] = primes[j] * dp[pointer[j]];
+            }
+            int minNum = *min_element(nums.begin(), nums.end());
+            dp[i] = minNum;
+            for(int j = 0; j < m; ++j){
+                if(nums[j] == minNum){
+                    pointer[j]++;
+                }
+            }
+        }
+        return dp[n];
     }
 };
 ```
