@@ -213,7 +213,7 @@ int rob(vector<int>& nums) {
 >   				high--;
 >   			}
 >   			nums[low] = nums[high];
->                                                                                                     
+>                                                                                                       
 >   			while (nums[low] <= pivot && low < high)
 >   			{
 >   				low++;
@@ -1179,27 +1179,28 @@ public:
 ```c++
 class Solution {
 public:
-    vector<string> permutation(string s) {
-        dfs(s,0);
-        return res;
-    }
-private:
-    vector<string> res; 
-    void dfs(string s, int x){
-        //已经固定完所有字符
-        if(x==s.size()-1){
-            res.push_back(s); //添加到结果
+    vector<string> res;
+
+    void dfs(string s, int index){
+        // 已经固定完所有字符，加入到结果集中
+        if(index == s.size() - 1){
+            res.push_back(s);
             return;
         }
 
-        //还未固定完所有字符
-        set<int> st; //用于储存已经固定的字符
-        for(int i=x; i<s.size(); ++i){
-            if(st.find(s[i]) != st.end()) continue; //这个字符已经在这一位固定过，重复，故剪枝
-            st.insert(s[i]); 
-            swap(s[i],s[x]); //将s[i]固定到x位
-            dfs(s,x+1); //继续往下固定x+1位字符
+        // 还未固定完所有字符
+        set<char> st; // 用于储存已经固定的字符
+        for(int i = index; i < s.size(); ++i){
+            if(st.count(s[i])) continue; //该字符已经在这一位固定过，剪枝
+            st.insert(s[i]);
+            swap(s[i], s[index]); // 将s[i]固定到第 index 位
+            dfs(s, index + 1);    // 继续向下固定第 index + 1 位
         }
+    }
+
+    vector<string> permutation(string s) {
+        dfs(s, 0);
+        return res;
     }
 };
 ```
@@ -1217,24 +1218,24 @@ class Solution {
 public:
     int maxPoints(vector<vector<int>>& points) {
         int n = points.size();
-        //小于3个点，必在一条直线上
-        if(n<3){
+        // 小于3个点，必在一条直线上
+        if(n < 3){
             return n;
         }
 
-        int res = 2;//至少有2个点在一条直线上
-        for(int i=0; i<n; ++i){
-            unordered_map<double,int> mp; //储存每个斜率的计数
-            for(int j=0; j<n; ++j){
+        int res = 2; // 至少有2个点在一条直线上
+        for(int i = 0; i < n; ++i){
+            unordered_map<double, int> mp; // 储存每个斜率的计数
+            for(int j = 0; j < n; ++j){
                 long long dx = points[j][0] - points[i][0];
                 long long dy = points[j][1] - points[i][1];
-                double slope = 1.0*dy/dx;
+                double slope = 1.0 * dy / dx;
                 if(mp.count(slope)){
-                    mp[slope]++; //该斜率已在哈希表中，计数+1
+                    mp[slope]++;   // 该斜率已在哈希表中，计数+1
                 }else{
-                    mp[slope]=2; //该斜率还未在哈希表中，初始化为2
+                    mp[slope] = 2; // 该斜率还未在哈希表中，初始化为2
                 }
-                res = max(res,mp[slope]);
+                res = max(res, mp[slope]);
             } 
         }
         return res;
@@ -2172,6 +2173,43 @@ public:
             }
         }
         return dp[n];
+    }
+};
+```
+
+
+
+### 2021.8.16 回溯
+
+> LeetCode - 526. 优美的排列
+>
+> https://leetcode-cn.com/problems/beautiful-arrangement/
+
+```c++
+class Solution {
+public:
+    vector<bool> vis; // 记录是否被遍历过
+    int num = 0;
+
+    void backtrack(int n, int index){
+        if(index == n + 1){
+            num++; // 找到一个符合要求的序列, num+1
+            return;
+        }
+        for(int i = 1; i < n + 1; ++i){
+            // 枚举第index个符合要求且没有被遍历过的元素
+            if(!vis[i] && (i % index == 0 || index % i == 0)){
+                vis[i] = true; // 将该元素标记为已遍历
+                backtrack(n, index + 1); // 向后继续寻找第index + 1 个满足要求的元素
+                vis[i] = false; // 回溯，标记为没有遍历过，后面还能继续用
+            }
+        }
+    }
+
+    int countArrangement(int n) {
+        vis.resize(n + 1);
+        backtrack(n, 1);
+        return num;
     }
 };
 ```
