@@ -213,7 +213,7 @@ int rob(vector<int>& nums) {
 >   				high--;
 >   			}
 >   			nums[low] = nums[high];
->                                                                                                       
+>                                                                                                           
 >   			while (nums[low] <= pivot && low < high)
 >   			{
 >   				low++;
@@ -2032,7 +2032,7 @@ class Solution {
 public:
     bool circularArrayLoop(vector<int>& nums) {
         int n = nums.size();
-        // 遍历nums, 遍历到i说明从num[i]出发，检验从该点出发是否有环
+        // 遍历nums, 遍历到i说明从nums[i]出发，检验从该点出发是否有环
         for(int i = 0; i < n; ++i){
             unordered_set<int> st; // set储存已遍历的index
             int cur = i;
@@ -2210,6 +2210,43 @@ public:
         vis.resize(n + 1);
         backtrack(n, 1);
         return num;
+    }
+};
+```
+
+
+
+### 2021.8.19 双指针-反转元音字母
+
+> LeetCode - 345. 反转字符串中的元音字母
+>
+> https://leetcode-cn.com/problems/reverse-vowels-of-a-string/
+
+```c++
+class Solution {
+public:
+    bool isVowel(char c){
+        string vowel = "aeiouAEIOU";
+        if(vowel.find(c) != -1) return true;
+        return false;
+    }
+
+    string reverseVowels(string s) {
+        // 双指针法
+        int n = s.size();
+        int i = 0, j = n - 1;
+        while(i < j){
+            while(i < n && !isVowel(s[i])){
+                i++;
+            }
+            while(j > 0 && !isVowel(s[j])){
+                j--;
+            }
+            if(i < j){
+                swap(s[i++], s[j--]);
+            }
+        }
+        return s; 
     }
 };
 ```
