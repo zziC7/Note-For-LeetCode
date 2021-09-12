@@ -213,7 +213,7 @@ int rob(vector<int>& nums) {
 >   				high--;
 >   			}
 >   			nums[low] = nums[high];
->                                                                                                             
+>                                                                                                                   
 >   			while (nums[low] <= pivot && low < high)
 >   			{
 >   				low++;
@@ -1376,6 +1376,10 @@ public:
 };
 ```
 
+lower_bound( begin,end,num)：从数组的begin位置到end-1位置二分查找第一个**大于或等于**num的数字，找到返回该数字的地址，不存在则返回end。通过返回的地址减去起始地址begin,得到找到数字在数组中的下标。
+
+upper_bound( begin,end,num)：从数组的begin位置到end-1位置二分查找第一个**大于**num的数字，找到返回该数字的地址，不存在则返回end。通过返回的地址减去起始地址begin,得到找到数字在数组中的下标。
+
 3、二分
 
 <img src="https://pic.leetcode-cn.com/b4521d9ba346cad9e382017d1abd1db2304b4521d4f2d839c32d0ecff17a9c0d-Picture1.png" alt="Picture1.png" style="zoom:40%;" />
@@ -2276,4 +2280,129 @@ public:
     }
 };
 ```
+
+
+
+### 2021.9.5 用Rand7() 实现Rand10()
+
+> LeetCode - 470. 用Rand7() 实现Rand10()
+>
+> https://leetcode-cn.com/problems/implement-rand10-using-rand7/solution/cong-zui-ji-chu-de-jiang-qi-ru-he-zuo-dao-jun-yun-/
+
+文章基于这样一个事实 (randX() - 1)*Y + randY() 可以等概率的生成[1, X * Y]范围的随机数
+
+```c++
+// The rand7() API is already defined for you.
+// int rand7();
+// @return a random integer in the range 1 to 7
+
+class Solution {
+public:
+    int rand10() {
+        int a = rand7();
+        int b = rand7();
+        int num = (a - 1) * 7 + b;  // rand49()
+        if(num <= 40) return num % 10 + 1;
+
+        a = num - 40; // rand9()
+        b = rand7();
+        num = (a - 1) * 7 + b;  // rand63()
+        if(num <= 60) return num % 10 + 1;
+
+        a = num - 60; // rand3()
+        b = rand7();
+        num = (a - 1) * 7 + b;  // rand21()
+        if(num <= 20) return num % 10 + 1;
+
+        return 1;
+    }
+};
+```
+
+
+
+### 2021.9.12 有效的括号字符串
+
+> LeetCode - 678. 有效的括号字符串
+>
+> https://leetcode-cn.com/problems/valid-parenthesis-string/
+
+1、栈
+
+```c++
+class Solution {
+public:
+    bool checkValidString(string s) {
+        int n = s.size();
+        if(!n) return true;
+        stack<int> left;
+        stack<int> star;
+        for(int i = 0; i < n; ++i){
+            if(s[i] == '('){
+                left.push(i);
+            }else if(s[i] == '*'){
+                star.push(i);
+            }else if(s[i] == ')'){
+                //优先使用左括号，若没有再使用星号
+                if(!left.empty()){
+                    left.pop();
+                }else if(!star.empty()){
+                    star.pop();
+                }else{
+                    return false;
+                }
+            }
+        }
+        while(!left.empty() && !star.empty()){
+            int leftIndex = left.top();
+            left.pop();
+            int starIndex = star.top();
+            star.pop();
+            if(leftIndex > starIndex) return false; //左括号必须在星号的左边
+        }
+        return left.empty();
+    }
+};
+```
+
+2、贪心
+
+```c++
+class Solution {
+public:
+    bool checkValidString(string s) {
+        int n = s.size();
+        if(!n) return true;
+        //未匹配的左括号的最大值和最小值
+        //min代表*用作右括号或者空
+        //max代表*用作了左括号
+        int minCnt = 0, maxCnt = 0;
+        for(auto c:s){
+            if(c == '('){
+                ++minCnt;
+                ++maxCnt;
+            }else if(c == ')'){
+                minCnt = max(minCnt - 1, 0);
+                --maxCnt;
+                if(maxCnt < 0){
+                    //没有与这个右括号相对应的左括号
+                    return false;
+                }
+            }else if(c == '*'){
+                ++maxCnt;
+                minCnt = max(minCnt - 1, 0);
+            }
+        }
+        return minCnt == 0;
+    }
+};
+```
+
+
+
+
+
+
+
+
 
