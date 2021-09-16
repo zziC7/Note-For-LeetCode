@@ -213,7 +213,7 @@ int rob(vector<int>& nums) {
 >   				high--;
 >   			}
 >   			nums[low] = nums[high];
->                                                                                                                   
+>                                                                                                                     
 >   			while (nums[low] <= pivot && low < high)
 >   			{
 >   				low++;
@@ -2402,7 +2402,163 @@ public:
 
 
 
+### 2021.9.16 2/3/4数之和
+
+> 1、两数之和 
+>
+> https://leetcode-cn.com/problems/two-sum/
+
+哈希表
+
+```c++
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        int n = nums.size();
+        unordered_map<int, int> mp;
+        for(int i = 0; i < n; ++i){
+            auto it = mp.find(target - nums[i]);
+            if(it != mp.end()){
+                return {i, mp[target - nums[i]]};
+            }
+            mp[nums[i]] = i;
+        }
+        return {};
+    }
+};
+```
+
+> 2、三数之和
+>
+> https://leetcode-cn.com/problems/3sum/
+
+排序+双指针
+
+```c++
+class Solution {
+public:
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        int n = nums.size();
+        sort(nums.begin(), nums.end());
+        vector<vector<int>> ans;
+        for(int first = 0 ; first < n; ++first){
+            //略过重复情况
+            if(first > 0 && nums[first] == nums[first - 1]){
+                continue;
+            }
+            //第三个数从后往前搜索
+            //不需要对于每个b，c都从最后面开始搜索，因为b变大，c必须变小
+            int third = n - 1; 
+            int target = -nums[first];
+            for(int second = first + 1; second < n; ++second){
+                //略过重复情况
+                if(second > first + 1 && nums[second] == nums[second - 1]){
+                    continue;
+                }
+                while(second < third && nums[second] + nums[third] > target){
+                    third--;
+                }
+                //双指针重合，若b再往前走，b>c，无符合要求的答案
+                if(second == third){
+                    break;
+                } 
+                if(nums[second] + nums[third] == target){
+                    ans.push_back({nums[first], nums[second], nums[third]});
+                }
+            }
+        }
+        return ans;
+    }
+};
+```
+
+```c++
+// while写法
+class Solution {
+public:
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        int n = nums.size();
+        sort(nums.begin(), nums.end());
+        vector<vector<int>> ans;
+        for(int first = 0 ; first < n; ++first){
+            //略过重复情况
+            if(first > 0 && nums[first] == nums[first - 1]){
+                continue;
+            }
+            int left = first + 1;
+            int right = n - 1;
+            while(left < right){
+                if(nums[first] + nums[left] + nums[right] > 0){
+                    right--;
+                }else if(nums[first] + nums[left] + nums[right] < 0){
+                    left++;
+                }else if(nums[first] + nums[left] + nums[right] == 0){
+                    ans.push_back({nums[first], nums[left], nums[right]});
+                    //找到一个答案，去重
+                    while(right > left && nums[right] == nums[right - 1]){
+                        right--;
+                    }
+                    while(right > left && nums[left] == nums[left + 1]){
+                        left++;
+                    }
+                    right--;
+                    left++;
+                }
+            }    
+        }
+        return ans;
+    }
+};
+```
 
 
 
+> 3、四数之和
+>
+> https://leetcode-cn.com/problems/4sum/
+
+与三数之和思路类似
+
+```c++
+class Solution {
+public:
+    vector<vector<int>> fourSum(vector<int>& nums, int target) {
+        int n = nums.size();
+        sort(nums.begin(), nums.end());
+        vector<vector<int>> res;
+        for(int k = 0; k < n; ++k){
+            if(k > 0 && nums[k] == nums[k - 1]){
+                continue;
+            }
+            for(int i = k + 1; i < n; ++i){
+                if(i > k + 1 && nums[i] == nums[i - 1]){
+                    continue;
+                }
+                int left = i + 1;
+                int right = n - 1;
+                int target1 = target - nums[k] - nums[i];
+                while(left < right){
+                    if(nums[left] + nums[right] > target1){
+                        right--;
+                    }else if(nums[left] + nums[right] < target1){
+                        left++;
+                    }else if(nums[left] + nums[right] == target1){
+                        res.push_back({nums[k], nums[i], nums[left], nums[right]});
+                        //找到一个答案，去重
+                        while(right > left && nums[right] == nums[right - 1]){
+                            right--;
+                        }
+                         while(right > left && nums[left] == nums[left + 1]){
+                            left++;
+                        }
+                        right--;
+                        left++;
+                    }
+                }
+            }
+        }
+        return res;
+    }
+};
+```
 
