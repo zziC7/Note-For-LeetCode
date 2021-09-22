@@ -213,7 +213,7 @@ int rob(vector<int>& nums) {
 >   				high--;
 >   			}
 >   			nums[low] = nums[high];
->                                                                                                                     
+>                                                                                                                           
 >   			while (nums[low] <= pivot && low < high)
 >   			{
 >   				low++;
@@ -2218,6 +2218,70 @@ public:
 };
 ```
 
+> LeetCode - 46. 全排列
+>
+> https://leetcode-cn.com/problems/permutations/
+
+```c++
+class Solution {
+public:
+    vector<vector<int>> res;
+    vector<int> path;
+    vector<bool> vis;
+
+    void backtrack(vector<int>& nums, vector<int>& path){
+        int n = nums.size();
+        if(path.size() == n){
+            res.push_back(path);
+            return;
+        }
+        for(int i = 0; i < n; ++i){
+            if(vis[i]) continue;
+            path.push_back(nums[i]);
+            vis[i] = true;
+            backtrack(nums, path);
+            path.pop_back();
+            vis[i] = false;
+        }
+    } 
+
+    vector<vector<int>> permute(vector<int>& nums) {
+        int n = nums.size();
+        vis.resize(n);
+        backtrack(nums, path);
+        return res;
+    }
+};
+```
+
+升级版解法：
+
+```c++
+class Solution {
+public:
+    vector<vector<int>> res;
+
+    void backtrack(vector<int>& nums, int index){
+        int n = nums.size();
+        if(index == nums.size() - 1){
+            res.push_back(nums);
+            return;
+        }
+
+        for(int i = index; i < n; ++i){
+            swap(nums[i], nums[index]);
+            backtrack(nums, index + 1);
+            swap(nums[index], nums[i]);
+        }
+    } 
+
+    vector<vector<int>> permute(vector<int>& nums) {
+        backtrack(nums, 0);
+        return res;
+    }
+};
+```
+
 
 
 ### 2021.8.19 双指针-反转元音字母
@@ -2556,6 +2620,79 @@ public:
                     }
                 }
             }
+        }
+        return res;
+    }
+};
+```
+
+ 
+
+
+
+### 2021.9.20 最长递增子序列
+
+> LeetCode 300. 最长递增子序列
+>
+> https://leetcode-cn.com/problems/longest-increasing-subsequence/
+
+1、dp
+
+```c++
+class Solution {
+public:
+    int lengthOfLIS(vector<int>& nums) {
+        int n = nums.size();
+        vector<int> dp(n); // dp[i] 表示 以nums[i]为结尾的最长递增子序列
+        for(int i = 0; i < n; ++i){
+            dp[i] = 1; // 自身必须被选取
+            for(int j = 0; j < i; ++j){
+                if(nums[j] < nums[i]){
+                    dp[i] = max(dp[i], dp[j] + 1);
+                }
+            }
+        }
+        return *max_element(dp.begin(), dp.end());
+    }
+};
+```
+
+
+
+### 2021.9.22 分隔链表
+
+> LeetCode - 725. 分隔链表
+>
+> https://leetcode-cn.com/problems/split-linked-list-in-parts/
+
+```c++
+class Solution {
+public:
+    vector<ListNode*> splitListToParts(ListNode* head, int k) {
+        // 遍历链表，得到链表长度
+        ListNode* temp = head;
+        int n = 0;
+        while(temp){
+            temp = temp->next;
+            ++n;
+        }
+        int quotient = n / k; // 每份的个数
+        int reminder = n % k; // 多出来的几个，放在前面，一组一个
+
+        vector<ListNode*> res(k, nullptr);
+        ListNode* curr = head;
+        for(int i = 0; i < k && curr; ++i){
+            res[i] = curr;
+            int thisSize = quotient;
+            if(i < reminder) ++thisSize; // 余数还没用完，加到这一组里
+            // 找到这一组的尾结点，断开
+            for(int j = 0; j < thisSize - 1; ++j){
+                curr = curr->next;
+            }
+            //断开这个节点与下一节点的联系
+            ListNode* tempNext = curr->next;
+            curr->next = nullptr;
+            curr = tempNext;
         }
         return res;
     }
