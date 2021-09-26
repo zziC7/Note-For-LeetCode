@@ -213,7 +213,7 @@ int rob(vector<int>& nums) {
 >   				high--;
 >   			}
 >   			nums[low] = nums[high];
->                                                                                                                             
+>                                                                                                                               
 >   			while (nums[low] <= pivot && low < high)
 >   			{
 >   				low++;
@@ -2798,6 +2798,43 @@ public:
         }
 
         return dp[m][n];
+    }
+};
+```
+
+
+
+### 2021.9.26 网格游戏
+
+> LeetCode - 5882. 网格游戏
+>
+> https://leetcode-cn.com/problems/grid-game/
+
+```c++
+class Solution {
+public:
+    long long gridGame(vector<vector<int>>& grid) {
+        int n = grid[0].size();
+        vector<vector<long long>> preSum(2, vector<long long>(n)); // 计算每一行的前缀和
+        preSum[0][0] = grid[0][0];
+        preSum[1][0] = grid[1][0];
+        for(int i = 0; i < 2; ++i){
+            for(int j = 1; j < n; ++j){
+                preSum[i][j] = preSum[i][j - 1] + grid[i][j];
+            }
+        }
+
+        // 初始值的情况为:bot1直接从下标0就往下走
+        long long ans = preSum[0][n - 1] - preSum[0][0];
+        // 遍历:从下标1开始拐~下标n-1开始拐
+        for(int j = 1; j < n; ++j){
+            // 括号里取max是因为bot2要最大化自己的点数
+            // 括号外取min是因为bot1要最小化bot2的点数
+            // preSum[0][n - 1] - preSum[0][j]是第一行剩下的点数
+            // preSum[1][j - 1]是第二行剩下的点数
+            ans = min(ans, max(preSum[0][n - 1] - preSum[0][j], preSum[1][j - 1]));
+        }
+        return ans;
     }
 };
 ```
