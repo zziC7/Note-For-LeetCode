@@ -213,7 +213,7 @@ int rob(vector<int>& nums) {
 >   				high--;
 >   			}
 >   			nums[low] = nums[high];
->                                                                                                                               
+>                                                                                                                                   
 >   			while (nums[low] <= pivot && low < high)
 >   			{
 >   				low++;
@@ -2838,4 +2838,106 @@ public:
     }
 };
 ```
+
+
+
+
+
+### 2021.9.28 二叉树&dfs&前缀和
+
+> LeetCode - 437. 路径总和Ⅲ
+>
+> https://leetcode-cn.com/problems/path-sum-iii/
+
+**1、dfs**
+
+```c++
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    int dfs(TreeNode* root, int targetSum){
+        // 空节点直接返回 rootSum = 0
+        if(!root){
+            return 0;
+        }
+		
+        // 记录从该节点出发，有多少种符合要求的路径
+        int ret = 0;
+        if(root->val == targetSum){
+            ret++;
+        }
+		
+        // dfs
+        ret += dfs(root->left, targetSum - root->val);
+        ret += dfs(root->right, targetSum - root->val);
+        return ret;
+    }
+
+
+    int pathSum(TreeNode* root, int targetSum) {
+        if(!root) return 0;
+        int ret = dfs(root, targetSum);  		// 初始化为从根节点出发的路径数
+        ret += pathSum(root->left, targetSum);  // 递归调用pathSum，dfs计算总路径数
+        ret += pathSum(root->right, targetSum);
+        return ret;
+    }
+};
+```
+
+Time Complexity: O(N<sup>2</sup>) 有很多重复计算(类似斐波那契数列)
+
+Space Complexity: O(N) 递归调用需要在栈上开辟空间
+
+
+
+**2、前缀和**
+
+```c++
+class Solution {
+public:
+    unordered_map<int, int> preSum; // [preSum, count]
+
+    int dfs(TreeNode* root, long long curr, int targetSum){
+        if(!root){
+            return 0;
+        }
+
+        int ret = 0;	   // 记录从顶点到当前节点，一共有多少条路径
+        curr += root->val; // 更新当前前缀和curr
+        // 当前前缀和为curr
+        // 如果之前路径有前缀和为curr- targetSum
+        // 则curr - (curr - targerSum) = targetSum
+        if(preSum.count(curr - targetSum)){
+            ret += preSum[curr - targetSum];
+        }
+
+        preSum[curr]++; // 更新preSum
+        ret += dfs(root->left, curr, targetSum);
+        ret += dfs(root->right, curr, targetSum);
+        preSum[curr]--; // 回溯
+
+        return ret;
+    }
+
+
+    int pathSum(TreeNode* root, int targetSum) {
+        preSum[0] = 1; // 前缀和为0的路径初始化为1(空路径)
+        return dfs(root, 0, targetSum);
+    }
+};
+```
+
+Time Complexity: O(N) 前缀和只需要遍历一次二叉树
+
+Space Complexity: O(N)
 
