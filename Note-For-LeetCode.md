@@ -213,7 +213,7 @@ int rob(vector<int>& nums) {
 >   				high--;
 >   			}
 >   			nums[low] = nums[high];
->                                                                                                                                   
+>                                                                                                                                       
 >   			while (nums[low] <= pivot && low < high)
 >   			{
 >   				low++;
@@ -2849,7 +2849,7 @@ public:
 >
 > https://leetcode-cn.com/problems/path-sum-iii/
 
-**1、dfs**
+**1、dfs**(双递归，效率不好) 第二种前缀和法要更好一点
 
 ```c++
 /**
@@ -2894,7 +2894,7 @@ public:
 };
 ```
 
-Time Complexity: O(N<sup>2</sup>) 有很多重复计算(类似斐波那契数列)
+Time Complexity: O(N<sup>2</sup>) 有很多重复计算(类似斐波那契数列的递归)
 
 Space Complexity: O(N) 递归调用需要在栈上开辟空间
 
@@ -2940,4 +2940,25 @@ public:
 Time Complexity: O(N) 前缀和只需要遍历一次二叉树
 
 Space Complexity: O(N)
+
+
+
+### 2021.9.30 矩形面积
+
+> LeetCode - 223. 矩形面积
+>
+> https://leetcode-cn.com/problems/rectangle-area/
+
+```c++
+class Solution {
+public:
+    int computeArea(int ax1, int ay1, int ax2, int ay2, int bx1, int by1, int bx2, int by2) {
+        int area1 = (ax2 - ax1) * (ay2 - ay1);
+        int area2 = (bx2 - bx1) * (by2 - by1);
+        int overlapX = max(min(ax2, bx2) - max(ax1, bx1), 0);
+        int overlapY = max(min(ay2, by2) - max(ay1, by1), 0);
+        return area1 + area2 - overlapX * overlapY;
+    }
+};
+```
 
