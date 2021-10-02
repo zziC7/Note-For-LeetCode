@@ -213,7 +213,7 @@ int rob(vector<int>& nums) {
 >   				high--;
 >   			}
 >   			nums[low] = nums[high];
->                                                                                                                                       
+>                                                                                                                                         
 >   			while (nums[low] <= pivot && low < high)
 >   			{
 >   				low++;
@@ -2958,6 +2958,34 @@ public:
         int overlapX = max(min(ax2, bx2) - max(ax1, bx1), 0);
         int overlapY = max(min(ay2, by2) - max(ay1, by1), 0);
         return area1 + area2 - overlapX * overlapY;
+    }
+};
+```
+
+
+
+### 2021.10.2 数字转十六进制
+
+> LeetCode - 405. 数字转换十六进制
+>
+> https://leetcode-cn.com/problems/convert-a-number-to-hexadecimal/
+
+```c++
+class Solution {
+public:
+    string toHex(int num) {
+        string res;
+        long N = num; 
+        if (N == 0) return "0";
+        string dict = "0123456789abcdef";
+        if (N < 0) N = N + 0x100000000; 
+        while (N > 0)
+        {
+            long lastDigit = N % 16;
+            N /= 16;
+            res = dict[lastDigit] + res;
+        }
+        return res;
     }
 };
 ```
