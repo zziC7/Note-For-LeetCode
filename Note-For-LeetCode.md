@@ -213,7 +213,7 @@ int rob(vector<int>& nums) {
 >   				high--;
 >   			}
 >   			nums[low] = nums[high];
->                                                                                                                                         
+>                                                                                                                                           
 >   			while (nums[low] <= pivot && low < high)
 >   			{
 >   				low++;
@@ -2986,6 +2986,77 @@ public:
             res = dict[lastDigit] + res;
         }
         return res;
+    }
+};
+```
+
+
+
+### 2021.10.6 第三大的数
+
+1、排序
+
+```c++
+class Solution {
+public:
+    int thirdMax(vector<int>& nums) {
+        int n = nums.size();
+        sort(nums.begin(), nums.end()); // 从小到大排序
+        int cnt = 1; // 记录现在是第几大的数
+        for(int i = n - 2; i >= 0; --i){
+            if(nums[i] != nums[i + 1]){
+                ++cnt;
+                if(cnt == 3) return nums[i];
+            }
+        }
+        return nums[n - 1];
+    }
+};
+```
+
+2、有序集合set
+
+```c++
+class Solution {
+public:
+    int thirdMax(vector<int> &nums) {
+        set<int> s;
+        for (int num : nums) {
+            s.insert(num);
+            if (s.size() > 3) {
+                s.erase(s.begin());
+            }
+        }
+        // 如果遍历完数组，集合大小为3，就返回最小的数(数组中第三大的数)
+        // 如果集合大小小于3，就返回最大的数(数组中最大的数)
+        return s.size() == 3 ? *s.begin() : *s.rbegin();
+    }
+};
+```
+
+3、一次遍历
+
+用三个变量a/b/c 维护前三大的数
+
+```c++
+class Solution {
+public:
+    int thirdMax(vector<int>& nums) {
+        int n = nums.size();
+        long a = LONG_MIN, b = LONG_MIN, c = LONG_MIN;
+        for(int i = 0; i < n; ++i){
+            if(nums[i] > a){
+                c = b;
+                b = a;
+                a = nums[i];
+            }else if(nums[i] > b && nums[i] < a){
+                c = b;
+                b = nums[i];
+            }else if(nums[i] > c && nums[i] < b){
+                c = nums[i];
+            }
+        }
+        return c == LONG_MIN ? a : c;
     }
 };
 ```
