@@ -213,7 +213,7 @@ int rob(vector<int>& nums) {
 >   				high--;
 >   			}
 >   			nums[low] = nums[high];
->                                                                                                                                           
+>                                                                                                                                             
 >   			while (nums[low] <= pivot && low < high)
 >   			{
 >   				low++;
@@ -3057,6 +3057,40 @@ public:
             }
         }
         return c == LONG_MIN ? a : c;
+    }
+};
+```
+
+
+
+
+
+### 2021.10.7 找单词数
+
+> LeetCode - 434. 字符串中的单词数
+>
+> https://leetcode-cn.com/problems/number-of-segments-in-a-string/
+
+```c++
+class Solution {
+public:
+    int countSegments(string s) {
+        int res = 0;
+        // 记录当前状态
+        // t=0表示空格状态
+        // t=1表示识别到字符的状态
+        int t = 0; 
+        for(char c:s){
+            if(c != ' ' && t == 0){
+                // 识别到新单词并且此时是空格状态
+                ++res;
+                t = 1;
+            }else if(c == ' '){
+                //识别到空格，进入空格状态
+                t = 0;
+            }
+        }
+        return res;
     }
 };
 ```
