@@ -213,7 +213,7 @@ int rob(vector<int>& nums) {
 >   				high--;
 >   			}
 >   			nums[low] = nums[high];
->                                                                                                                                             
+>                                                                                                                                                   
 >   			while (nums[low] <= pivot && low < high)
 >   			{
 >   				low++;
@@ -3093,5 +3093,135 @@ public:
         return res;
     }
 };
+```
+
+
+
+### 2021.10.9 两数相加
+
+```c++
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+        ListNode* head = nullptr, *tail = nullptr;
+        int next = 0;
+        while(l1 || l2){
+            int num1 = l1 == nullptr ? 0 : l1->val;
+            int num2 = l2 == nullptr ? 0 : l2->val;
+            int temp = num1 + num2 + next;
+            if(!head){
+                head = tail = new ListNode(temp % 10);
+            }else{
+                tail->next = new ListNode(temp % 10);
+                tail = tail->next;
+            }
+            next = temp / 10;
+            if(l1){
+                l1 = l1->next;
+            }
+            if(l2){
+                l2 = l2->next;
+            }
+        }
+        // 最后一位加完还有进位情况
+        if(next){
+            tail->next = new ListNode(next);
+            tail = tail->next;
+        }
+        return head;
+    }
+};
+```
+
+
+
+### 2021.10.11 堆排序
+
+堆排序：
+
+从下向上初始化建堆(i = n / 2 -1; i  >= 0)
+
+-->开始排序:倒序(i = n - 1; i > 0)取顶堆(交换v[0]和v[i])
+
+-->重新构建堆v[0]~v[i-1]
+
+
+
+作用: topK, 优先队列
+
+```C++
+/*
+* 调整堆
+* i:父节点下标
+* n:调整到哪里为止(包含下标n)
+*/
+void HeapAdjust(vector<int>& v, int i, int n);
+
+// 5、堆排序 O(nlogn)
+void HeapSort(vector<int>& v)
+{
+	int n = v.size();
+
+	// 初始化构建大顶堆
+	for (int i = n / 2 - 1; i >= 0; --i)
+	{	
+		// 从下向上构建大顶堆
+		HeapAdjust(v, i, n - 1);
+
+		//cout << "初始化大顶堆:";
+		//for (int i : v) {
+		//	cout << i << " ";
+		//}
+		//cout << endl;
+	}
+
+	for (int i = n - 1; i > 0; --i)
+	{	
+		swap(v[i], v[0]); // v[0]是大顶堆的顶，目前最大值，放到最后面
+		HeapAdjust(v, 0, i - 1); // 将v[0]-v[i - 1]重新构造大顶堆
+
+		//cout << "进行排序:";
+		//for (int i : v) {
+		//	cout << i << " ";
+		//}
+		//cout << endl;
+	}
+}
+
+// 调整堆
+void HeapAdjust(vector<int>& v, int i, int n)
+{
+	int parent = i; // 记录此父节点
+	for (int child = 2 * i + 1; child <= n; child = 2 * child + 1)
+	{
+		if (child < n && v[child] < v[child + 1])
+		{
+			// child不是最后一个元素77774
+			// 并且左子节点小于右子节点，就选择右边
+			++child;
+		}
+
+		if (v[parent] >= v[child])
+		{	
+			// 父亲比儿子及其下面的所有都要小，直接退出循环
+			break;
+		}
+		else if (v[parent] < v[child])
+		{
+			swap(v[parent], v[child]); // 将父节点与大的子节点交换
+			parent = child;	// 继续向下调整
+		}
+	}
+}
 ```
 
