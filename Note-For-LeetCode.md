@@ -213,7 +213,7 @@ int rob(vector<int>& nums) {
 >   				high--;
 >   			}
 >   			nums[low] = nums[high];
->                                                                                                                                                   
+>                                                                                                                                                       
 >   			while (nums[low] <= pivot && low < high)
 >   			{
 >   				low++;
@@ -3206,14 +3206,14 @@ void HeapAdjust(vector<int>& v, int i, int n)
 	{
 		if (child < n && v[child] < v[child + 1])
 		{
-			// child不是最后一个元素77774
+			// child不是最后一个元素
 			// 并且左子节点小于右子节点，就选择右边
 			++child;
 		}
 
 		if (v[parent] >= v[child])
 		{	
-			// 父亲比儿子及其下面的所有都要小，直接退出循环
+			// 父亲比儿子及其下面的所有都要大，直接退出循环
 			break;
 		}
 		else if (v[parent] < v[child])
@@ -3223,5 +3223,59 @@ void HeapAdjust(vector<int>& v, int i, int n)
 		}
 	}
 }
+```
+
+
+
+### 2021.10.13 双栈实现队列
+
+https://leetcode-cn.com/problems/implement-queue-using-stacks/
+
+```c++
+class MyQueue {
+public:
+    stack<int> stIn;   // 输入栈
+    stack<int> stOut;  // 输出栈
+
+    MyQueue() {
+
+    }
+    
+    void push(int x) {
+        stIn.push(x);
+    }
+    
+    int pop() {
+        // 如果输出栈为空 就把输入栈所有元素压入输出栈
+        if(stOut.empty()){
+            while(!stIn.empty()){
+                stOut.push(stIn.top());
+                stIn.pop();
+            }
+        }
+        int res = stOut.top();
+        stOut.pop();
+        return res;
+    }
+    
+    int peek() {
+        int temp = this->pop(); // 复用pop()
+        stOut.push(temp);		// pop弹出了第一个元素，压回去
+        return temp;
+    }
+    
+    bool empty() {
+        return stIn.empty() && stOut.empty();
+    }
+};
+
+/**
+ * Your MyQueue object will be instantiated and called as such:
+ * MyQueue* obj = new MyQueue();
+ * obj->push(x);
+ * int param_2 = obj->pop();
+ * int param_3 = obj->peek();
+ * bool param_4 = obj->empty();
+ */
 ```
 
