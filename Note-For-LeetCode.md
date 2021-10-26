@@ -213,7 +213,7 @@ int rob(vector<int>& nums) {
 >   				high--;
 >   			}
 >   			nums[low] = nums[high];
->                                                                                                                                                         
+>                                                                                                                                                           
 >   			while (nums[low] <= pivot && low < high)
 >   			{
 >   				low++;
@@ -3350,5 +3350,36 @@ private:
  * obj->addWord(word);
  * bool param_2 = obj->search(word);
  */
+```
+
+
+
+### 2021.10.26 单调栈
+
+[LeetCode. 496 - 下一个更大元素](https://leetcode-cn.com/problems/next-greater-element-i/)
+
+```c++
+class Solution {
+public:
+    vector<int> nextGreaterElement(vector<int>& nums1, vector<int>& nums2) {
+        int n1 = nums1.size();
+        int n2 = nums2.size();
+        stack<int> st; // 构建单调栈
+        unordered_map<int, int> mp; // [elem, ans]
+        for(int i = n2 - 1; i >= 0; --i){
+            int num = nums2[i];
+            while(!st.empty() && num > st.top()){
+                st.pop();
+            }
+            mp[num] = st.empty() ? -1 : st.top();
+            st.push(num);
+        }
+        vector<int> ans;
+        for(int i = 0; i < n1; ++i){
+            ans.push_back(mp[nums1[i]]);
+        }
+        return ans;
+    }
+};
 ```
 
