@@ -213,7 +213,7 @@ int rob(vector<int>& nums) {
 >   				high--;
 >   			}
 >   			nums[low] = nums[high];
->                                                                                                                                                           
+>                                                                                                                                                             
 >   			while (nums[low] <= pivot && low < high)
 >   			{
 >   				low++;
@@ -3379,6 +3379,46 @@ public:
             ans.push_back(mp[nums1[i]]);
         }
         return ans;
+    }
+};
+```
+
+
+
+### 2021.10.27 重新排列得到2的幂
+
+[LeetCode - 869. 重新排列得到2的幂](https://leetcode-cn.com/problems/reordered-power-of-2/)
+
+```c++
+class Solution {
+public:
+    // 存储所有 2 的幂的状态
+    unordered_set<string> powerOf2;
+	
+    // 初始化，把所有2的幂的状态存到哈希集合中
+    Solution(){
+        init();
+    }
+	
+    // 把一个数转换为状态(0~9分别出现的次数)
+    string countDigits(int n){
+        string res(10, 0);
+        while(n){
+            ++res[n % 10];
+            n /= 10;
+        }
+        return res;
+    }
+
+    void init(){
+        for(int i = 1; i <= 1e9; i <<= 1){
+            powerOf2.insert(countDigits(i));
+        }
+    }
+	
+    // 检验这个数能不能重新排列变成2的幂
+    bool reorderedPowerOf2(int n) {
+        return powerOf2.count(countDigits(n));
     }
 };
 ```
