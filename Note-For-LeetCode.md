@@ -213,7 +213,7 @@ int rob(vector<int>& nums) {
 >   				high--;
 >   			}
 >   			nums[low] = nums[high];
->                                                                                                                                                             
+>                                                                                                                                                                 
 >   			while (nums[low] <= pivot && low < high)
 >   			{
 >   				low++;
@@ -3419,6 +3419,47 @@ public:
     // 检验这个数能不能重新排列变成2的幂
     bool reorderedPowerOf2(int n) {
         return powerOf2.count(countDigits(n));
+    }
+};
+```
+
+
+
+### 2021.11.18 二叉树的坡度
+
+[LeetCode - 563. 二叉树的坡度](https://leetcode-cn.com/problems/binary-tree-tilt/)
+
+```c++
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    int ans = 0;
+
+    int findTilt(TreeNode* root) {
+        dfs(root);
+        return ans;
+    }
+
+    // dfs返回的是该节点为根的子树和
+    // dfs每个节点，坡度累加得到答案
+    int dfs(TreeNode* root){
+        if(!root){
+            return 0;
+        }
+        int sumLeft = dfs(root->left);
+        int sumRight = dfs(root->right);
+        ans += abs(sumLeft - sumRight);
+        return sumLeft + sumRight + root->val;
     }
 };
 ```
